@@ -29,4 +29,5 @@ heroes.sort("Win_Percentage")
 
 pl.Config.set_tbl_rows(60)
 print(heroes)
+
     
