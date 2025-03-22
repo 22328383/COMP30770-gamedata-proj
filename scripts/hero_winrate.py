@@ -17,9 +17,16 @@ heroes = pl.read_parquet(heroes_file_path)
 hero_stats = df.group_by("hero_id").agg([
     pl.count().alias("Total"),
     pl.sum("won").alias("Wins")
-])
+]).fill_null(0)
 
 heroes = heroes.join(hero_stats, on="hero_id", how="left")
 
+heroes = heroes.with_columns(
+    (pl.col("Wins") / pl.col("Total") * 100).alias("Win_Percentage")
+).filter(pl.col("Total") > 0)
+
+heroes.sort("Win_Percentage")
+
+pl.Config.set_tbl_rows(60)
 print(heroes)
     
